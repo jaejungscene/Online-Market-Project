@@ -1,7 +1,7 @@
 import { Divider, Form, Input, InputNumber, Button, Upload, message } from "antd";
 import { useState } from "react";
 import "./index.css";
-import { API_URL } from "../config/constants";
+import { API_URL, Storage_URL } from "../config/constants";
 import axios from "axios";
 import {useHistory} from "react-router-dom";
 
@@ -35,6 +35,7 @@ export default function UploadPage() {
     if(info.file.status === "done"){
       const response = info.file.response;
       const imageUrl = response.imageUrl;
+      console.log(imageUrl);
       setImageUrl(imageUrl);
     }
   }
@@ -55,7 +56,8 @@ export default function UploadPage() {
           >
             { // if imageUrl is received, view the uploaded image
               imageUrl
-              ? <img id="upload-img" src={`${API_URL}/${imageUrl}`}/>
+              ? <img id="upload-img" src={`${Storage_URL}/${imageUrl}`}/>
+              // `${API_URL}/${imageUrl}`
               : (
                 <div id="upload-img-placeholder">
                   <img src="/images/icons/camera.png" />

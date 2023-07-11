@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const models = require('./models'); // import SQLite
 const app = express();
 app.use(express.json());
@@ -25,7 +26,7 @@ app.post('/images', upload.single('image'), (req,res)=>{
     const file = req.file;
     console.log(file);
     res.send({
-        imageUrl : file.path
+        imageUrl: file.path
     })
 });
 /***********************************/
@@ -33,17 +34,18 @@ app.post('/images', upload.single('image'), (req,res)=>{
 
 
 /*********** API server ************/
-app.listen(port, ()=>{
-    console.log("그랩의 쇼핑몰 서버가 돌아가고 있습니다");
+app.listen(port, (port)=>{
+    console.log(`open port is ${port}`);
+    console.log("server is running...");
     models.sequelize.sync()
-    .then(()=>{
-        console.log('DB 연결 성공!');
-    })
-    .catch((err)=>{
-        console.error(err);
-        console.log('DB 연결 에러');
-        process.exit();
-    });
+        .then(()=>{
+            console.log('DB 연결 성공!');
+        })
+        .catch((err)=>{
+            console.error(err);
+            console.log('DB 연결 에러');
+            process.exit();
+        });
 })
 
 // get all products

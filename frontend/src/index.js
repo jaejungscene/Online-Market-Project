@@ -4,12 +4,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
-import TimerComponent from './time'
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      {/* <TimerComponent name='jaejung' studentid={123}/> */}
       <App />
     </BrowserRouter>
   </React.StrictMode>,
