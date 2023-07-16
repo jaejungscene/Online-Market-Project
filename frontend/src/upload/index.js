@@ -49,7 +49,7 @@ export default function UploadPage() {
         >
           <Upload
             name="image"
-            action={`${API_URL}/images`}
+            action={`${API_URL}/image`}
             listType="picture"
             showUploadList={false}
             onChange={onChangeImage}

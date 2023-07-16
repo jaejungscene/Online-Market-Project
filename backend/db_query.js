@@ -11,9 +11,9 @@ let db = new sqlite3.Database(
 );
 
 
-
-
-
+/**
+ * Create querys below
+ */
 db.serialize(() => {
   db.each(
     `DELETE FROM Products WHERE name=\'갓 키보드\';`, (err, row) => {

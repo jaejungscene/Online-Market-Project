@@ -2,15 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const models = require('./models'); // import SQLite
-const app = express();
-app.use(express.json());
-app.use(cors());
-app.use("/upload", express.static("upload"));
-const port = 8080;
 const multer = require('multer'); // Multer is a node.js middleware for handling multipart/form-data, which is primarily used for uploading files
 
 
-/*********** Storage server **********/
+/************************************
+ * Storage server setup
+ ************************************/
 const upload = multer({
     storage: multer.diskStorage({
         destination: function(req, file, cb){
@@ -22,18 +19,22 @@ const upload = multer({
     })
 }); // designate where the file to be upload
 
-app.post('/images', upload.single('image'), (req,res)=>{
-    const file = req.file;
-    console.log(file);
-    res.send({
-        imageUrl: file.path
-    })
-});
-/***********************************/
+
+let corsOptions = {
+    origin: '',
+    credentials: true
+}
+
+const app = express();
+app.use(express.json());
+app.use(cors()); // 모든 domain에서 제한 없이 해당 서버에 요청을 보내고 응답을 받을 수 있게 된다.
+app.use("/upload", express.static("upload"));
+const port = 8080;
 
 
-
-/*********** API server ************/
+/**********************************
+ * API server open
+ **********************************/ 
 app.listen(port, (port)=>{
     console.log(`open port is ${port}`);
     console.log("server is running...");
@@ -48,7 +49,10 @@ app.listen(port, (port)=>{
         });
 })
 
-// get all products
+
+/**
+ * get all products
+ */ 
 app.get("/products", (req, res)=>{
     models.Product.findAll({ // find data in database
         order:[
@@ -73,6 +77,7 @@ app.get("/products", (req, res)=>{
     });
 });
 
+
 app.post("/products", (req,res)=>{
     const body = req.body;
     const {name, description, price, seller, imageUrl} = body;
@@ -96,6 +101,7 @@ app.post("/products", (req,res)=>{
     })
 });
 
+
 app.get("/products/:id", (req,res)=>{
     const params = req.params;
     const {id} = params;
@@ -114,3 +120,30 @@ app.get("/products/:id", (req,res)=>{
     });
 });
 
+
+/**
+ * Store uploaded image to image database
+ * and 
+ * Response storage path of uploaded image.
+ */
+app.post('/image', upload.single('image'), (req,res)=>{
+    const file = req.file;
+    console.log(file);
+    res.send({
+        imageUrl: file.path
+    })
+});
+
+
+app.get('/banners', (req, res)=>{
+    models.Banner.findAll({
+        limit: 2
+    }).then((result)=>{
+        res.send({
+            banners: result,
+        });
+    }).catch((error)=>{
+        console.error(error);
+        res.status(500).send('에러가 발생했습니다.');
+    })
+})
