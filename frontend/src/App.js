@@ -1,3 +1,4 @@
+// import 'antd/dist/antd.less';
 import 'antd/dist/antd.css';
 import "./App.css";
 import MainPage from "./main/index.js";
@@ -33,7 +34,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={MainPage}/>
           <Route exact path="/product/:id" component={ProductPage}/>
-          <Route exact path="/upload" component={UploadPage}/>
+          <Route exact path="/upload" component={UploadPage}/> 
           <Route path="*" component={NonPage}/>
         </Switch>
       </div>

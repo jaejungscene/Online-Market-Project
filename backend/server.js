@@ -64,7 +64,8 @@ app.get("/products", (req, res)=>{
             "price",
             "createdAt",
             "seller",
-            "imageUrl"
+            "imageUrl",
+            "soldout",
         ]
     }).then((result)=>{ // if result exits, send data
         console.log("PRODUCTS: ", result);
@@ -133,6 +134,29 @@ app.post('/image', upload.single('image'), (req,res)=>{
         imageUrl: file.path
     })
 });
+
+
+app.post("/purchase/:id", (req,res)=>{
+    const {id} = req.params;
+    console.log(req.params);
+    models.Product.update(
+    {
+        soldout: 1, //true
+    },
+    {
+        where: {
+            id
+        },
+    }).then((result)=>{
+        res.send({
+            result: true,
+        })
+    }).catch((error)=>{
+        console.error(error);
+        res.status(500).send('에러가 발생했습니다.');
+    })
+})
+
 
 
 app.get('/banners', (req, res)=>{
