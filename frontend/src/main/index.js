@@ -34,7 +34,9 @@ export default function MainPage(){
   if(products.length === 0){
     return (
       <div style={{textAlign: "center", paddingTop: 32}}>
-        <Spin size="large"/>
+        <Spin 
+        tip="Loading..."
+        size="large"/>
       </div>
     )
   }

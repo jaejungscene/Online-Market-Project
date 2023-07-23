@@ -3,13 +3,13 @@ import { useParams } from "react-router-dom"
 import axios from 'axios';
 import './index.css'
 import { API_URL } from "../config/constants";
-import {Space, Spin} from 'antd';
+import {Button, Space, Spin, message} from 'antd';
+import dayjs from "dayjs";
 
 export default function ProductPage(){
   const {id} = useParams(); // App.js에 ":id" 부분에 들어가는 값이 전달됨
   const [product, setProduct] = useState(null);
-  console.log("product id: ", id);
-  useEffect(() => {
+  const getProduct = () => {
     axios
     .get(`${API_URL}/products/${id}`)
     .then((result) => {
@@ -19,6 +19,11 @@ export default function ProductPage(){
     .catch((error) => {
       console.error(error);
     });
+  }
+
+  console.log("product id: ", id);
+  useEffect(() => {
+    getProduct();
   }, [])
 
   if(product === null){
@@ -33,6 +38,17 @@ export default function ProductPage(){
     )
   }
 
+  const onClickPurchase = ()=>{
+    axios.post(`${API_URL}/purchase/${id}`)
+    .then((result)=>{
+      message.info("구매가 완료되었습니다.");
+      getProduct();
+    })
+    .catch((error)=>{
+      console.error(error);
+    })
+
+  }
   return(
     <div>
       <div id='image-box'>
@@ -45,7 +61,18 @@ export default function ProductPage(){
       <div id="contents-box">
         <div id="name">{product.name}</div>
         <div id="price">{product.price}원</div>
-        <div id='createAt'>{product.createAt}</div>
+        <div id='createAt'>
+          {dayjs(product.createAt).format("YYYY년 MM월 DD일")}
+        </div>
+        <Button 
+        id="purchase-button"  
+        size="large" 
+        type="primary" 
+        danger
+        onClick={onClickPurchase}
+        disabled={product.soldout}>
+          재빨리 구매하기
+        </Button>
         <pre id="description">{product.description}</pre>
       </div>
     </div>
