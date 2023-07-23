@@ -6,6 +6,13 @@ const multer = require('multer'); // Multer is a node.js middleware for handling
 
 
 /************************************
+ * Global Constant Variable
+ ************************************/
+const FRONT_PATH = "../frontend/build";
+const DEPLOY = process.env.DEPLOY;
+
+
+/************************************
  * Storage server setup
  ************************************/
 const upload = multer({
@@ -24,11 +31,13 @@ let corsOptions = {
     origin: '',
     credentials: true
 }
-
 const app = express();
 app.use(express.json());
 app.use(cors()); // 모든 domain에서 제한 없이 해당 서버에 요청을 보내고 응답을 받을 수 있게 된다.
 app.use("/upload", express.static("upload"));
+// if(DEPLOY){
+//     app.use(express.static(path.join(__dirname, FRONT_PATH)));
+// }
 const port = 8080;
 
 
@@ -50,9 +59,18 @@ app.listen(port, (port)=>{
 })
 
 
-/**
- * get all products
- */ 
+/**********************************
+ * GET home
+ **********************************/ 
+// if(DEPLOY){
+//     app.get("/", (req, res) => {
+//         res.sendFile(path.join(__dirname, FRONT_PATH, 'index.html'))
+//     })
+// }
+
+/**********************************
+ * GET all products
+ **********************************/ 
 app.get("/products", (req, res)=>{
     models.Product.findAll({ // find data in database
         order:[
@@ -78,7 +96,9 @@ app.get("/products", (req, res)=>{
     });
 });
 
-
+/**********************************
+ * POST user's product
+ **********************************/ 
 app.post("/products", (req,res)=>{
     const body = req.body;
     const {name, description, price, seller, imageUrl} = body;
@@ -102,7 +122,9 @@ app.post("/products", (req,res)=>{
     })
 });
 
-
+/**********************************
+ * GET specific product
+ **********************************/ 
 app.get("/products/:id", (req,res)=>{
     const params = req.params;
     const {id} = params;
@@ -121,12 +143,9 @@ app.get("/products/:id", (req,res)=>{
     });
 });
 
-
-/**
- * Store uploaded image to image database
- * and 
- * Response storage path of uploaded image.
- */
+/**********************************
+ * POST image, stor & response image's path
+ **********************************/ 
 app.post('/image', upload.single('image'), (req,res)=>{
     const file = req.file;
     console.log(file);
@@ -135,7 +154,9 @@ app.post('/image', upload.single('image'), (req,res)=>{
     })
 });
 
-
+/**********************************
+ * POST purchase info
+ **********************************/ 
 app.post("/purchase/:id", (req,res)=>{
     const {id} = req.params;
     console.log(req.params);
@@ -157,17 +178,18 @@ app.post("/purchase/:id", (req,res)=>{
     })
 })
 
-
-
+/**********************************
+ * GET banner's image
+ **********************************/ 
 app.get('/banners', (req, res)=>{
     models.Banner.findAll({
-        limit: 2
-    }).then((result)=>{
-        res.send({
-            banners: result,
-        });
-    }).catch((error)=>{
-        console.error(error);
-        res.status(500).send('에러가 발생했습니다.');
-    })
+            limit: 2
+        }).then((result)=>{
+            res.send({
+                banners: result,
+            });
+        }).catch((error)=>{
+            console.error(error);
+            res.status(500).send('에러가 발생했습니다.');
+        })
 })
